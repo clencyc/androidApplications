@@ -1,6 +1,7 @@
 package com.example.sql_registration
 
 import android.content.Intent
+import android.database.sqlite.SQLiteDatabase
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -13,6 +14,7 @@ class loginActivity : AppCompatActivity() {
     private lateinit var password_login:EditText
     private lateinit var _loginbtn:Button
     private lateinit var _createaccount:Button
+    lateinit var db:SQLiteDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,17 +25,38 @@ class loginActivity : AppCompatActivity() {
         _loginbtn = findViewById(R.id.button3)
         _createaccount = findViewById(R.id.button4)
 
+        db = openOrCreateDatabase("clencyDB", MODE_PRIVATE, null)
+        db.execSQL("CREATE TABLE IF NOT EXISTS users(jina VARCHAR, arafa VARCHAR, kitambulisho VARCHAR, siri VARCHAR )")
+
+
         _loginbtn.setOnClickListener() {
-            var useremail = email_login.getText().toString()
-            var userpass = password_login.getText().toString()
+            //Write a logic to check if user exists in SQL
 
-            if (useremail.isEmpty() || userpass.isEmpty()){
+            var email = email_login.text.toString().trim()
+            var password = password_login.text.toString().trim()
 
-                Toast.makeText(this, "Cannot Submit empty field", Toast.LENGTH_SHORT).show()
+            //validate our fields
+            if (email.isEmpty() || password.isEmpty()) {
 
-            }
+                Toast.makeText(this, "Cannot Submit an empty field", Toast.LENGTH_SHORT).show()
 
-            loginUser(useremail, userpass);
+                }else{
+                val cursor = db.rawQuery("SELECT * FROM users WHERE kitambulisho=? AND siri=?", arrayOf(email, password))
+
+                if (cursor != null && cursor.moveToFirst()) {
+                    // user is authenticated, start a new activity
+                    val intent = Intent(this, DashboardActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    Toast.makeText(this, "Invalid email or password, please try again", Toast.LENGTH_SHORT).show()
+                    var login = Intent(this, DashboardActivity::class.java)
+                    startActivity(login)
+                }
+
+
+                }
+
 
 
 

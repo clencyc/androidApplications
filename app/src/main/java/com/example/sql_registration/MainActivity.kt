@@ -34,7 +34,7 @@ class MainActivity : AppCompatActivity() {
         Loginbtn = findViewById(R.id.button2)
 
         db = openOrCreateDatabase("clencyDB", MODE_PRIVATE, null)
-        db.execSQL("CREATE TABLE IF NOT EXISTS users(jina VARCHAR, arafa VARCHAR, kitambulisho VARCHAR, number VARCHAR )")
+        db.execSQL("CREATE TABLE IF NOT EXISTS users(jina VARCHAR, arafa VARCHAR, kitambulisho VARCHAR, siri VARCHAR )")
 
         btncreate.setOnClickListener {
             //Receive data from the user
@@ -53,18 +53,20 @@ class MainActivity : AppCompatActivity() {
 
             } else {
                 //Proceed to save your data into the db
-                db.execSQL("INSERT INTO users VALUES('$name','$name2','$email','$password')")
+                db.execSQL("INSERT INTO users VALUES('"+name+"', '"+name2+"', '"+email+"', '"+password+"')")
 
 
                 //Toast a success message
                 Toast.makeText(this, "User Created succesfully", Toast.LENGTH_SHORT).show()
 
-                var gotologin = Intent(this, loginActivity::class.java)
-                startActivity(gotologin)
-
-
-
             }
         }
+
+        Loginbtn.setOnClickListener {
+            var gotologin = Intent(this, loginActivity::class.java)
+            startActivity(gotologin)
+        }
+
+
     }
 }
